@@ -2,13 +2,19 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { NAV_LINKS, SOCIAL_LINKS } from "@/data/nav";
 import { EASE } from "@/lib/motion";
+import { useHasMounted } from "@/lib/useHasMounted";
 
 export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  // Unlike the lightbox, this component is always rendered by <Header>
+  // (not just after a user interaction), so it runs during SSR too — guard
+  // the portal, since `document` doesn't exist on the server.
+  const hasMounted = useHasMounted();
 
   useEffect(() => {
     if (!open) return;
@@ -21,7 +27,15 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  return (
+  if (!hasMounted) return null;
+
+  // Rendered via a portal straight onto <body>, not as a child of <header>.
+  // The header switches to a `backdrop-blur` background as soon as the menu
+  // opens, and `backdrop-filter` establishes a new containing block for
+  // `position: fixed` descendants — left inline, this dialog's "fixed
+  // inset-0" would resolve against the header's own (short) box instead of
+  // the viewport, squeezing the whole overlay into the header's height.
+  return createPortal(
     <AnimatePresence>
       {open ? (
         <motion.div
@@ -29,10 +43,10 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           aria-modal="true"
           aria-label="Site menu"
           className="fixed inset-0 z-50 flex flex-col bg-ink text-paper md:hidden"
-          initial={{ clipPath: "inset(0 0 100% 0)" }}
-          animate={{ clipPath: "inset(0 0 0% 0)" }}
-          exit={{ clipPath: "inset(0 0 100% 0)" }}
-          transition={{ duration: 0.5, ease: EASE }}
+          initial={{ opacity: 0, y: -24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -24 }}
+          transition={{ duration: 0.35, ease: EASE }}
         >
           <div className="flex items-center justify-between px-6 py-5">
             <span className="font-display text-xl font-medium tracking-tight">Forma Studio</span>
@@ -81,6 +95,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           </div>
         </motion.div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
