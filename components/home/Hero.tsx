@@ -6,6 +6,7 @@ import { ArrowLink } from "@/components/ui/ArrowLink";
 import { Container } from "@/components/ui/Container";
 import { EASE } from "@/lib/motion";
 import { SITE_IMAGES } from "@/data/site-images";
+import { useHasMounted } from "@/lib/useHasMounted";
 
 const line = {
   hidden: { opacity: 0, y: "100%" },
@@ -17,6 +18,11 @@ const line = {
 };
 
 export function Hero() {
+  // On the very first paint, skip the mount animation entirely so the
+  // headline is never gated behind opacity:0 waiting on JS — see
+  // useHasMounted.
+  const hasMounted = useHasMounted();
+
   return (
     <section className="relative flex min-h-[100svh] items-end overflow-hidden bg-ink">
       <Image
@@ -35,7 +41,7 @@ export function Hero() {
             <motion.span
               className="block"
               custom={0.1}
-              initial="hidden"
+              initial={hasMounted ? "hidden" : false}
               animate="visible"
               variants={line}
             >
@@ -46,7 +52,7 @@ export function Hero() {
             <motion.span
               className="block italic"
               custom={0.25}
-              initial="hidden"
+              initial={hasMounted ? "hidden" : false}
               animate="visible"
               variants={line}
             >
@@ -56,7 +62,7 @@ export function Hero() {
         </h1>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={hasMounted ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.55 }}
           className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between"

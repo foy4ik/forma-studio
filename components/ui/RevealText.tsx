@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { fadeUpDelayed, viewportOnce } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { useRevealFallback } from "@/lib/useRevealFallback";
 
 export function RevealText({
   children,
@@ -18,6 +19,7 @@ export function RevealText({
   id?: string;
 }) {
   const MotionTag = motion[as as "div"];
+  const forceVisible = useRevealFallback();
 
   return (
     <MotionTag
@@ -25,6 +27,7 @@ export function RevealText({
       className={cn(className)}
       initial="hidden"
       whileInView="visible"
+      animate={forceVisible ? "visible" : undefined}
       viewport={viewportOnce}
       variants={fadeUpDelayed(delay)}
     >

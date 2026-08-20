@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { revealImage, viewportOnce } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { useRevealFallback } from "@/lib/useRevealFallback";
 
 export function RevealImage({
   src,
@@ -24,11 +25,14 @@ export function RevealImage({
   fill?: boolean;
   children?: React.ReactNode;
 }) {
+  const forceVisible = useRevealFallback();
+
   return (
     <motion.div
       className={cn("relative overflow-hidden bg-stone", className)}
       initial="hidden"
       whileInView="visible"
+      animate={forceVisible ? "visible" : undefined}
       viewport={viewportOnce}
       variants={revealImage}
     >

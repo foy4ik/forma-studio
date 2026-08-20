@@ -7,6 +7,7 @@ import { ArrowUpRight } from "lucide-react";
 import type { Project } from "@/data/projects";
 import { CATEGORY_LABELS } from "@/data/projects";
 import { EASE } from "@/lib/motion";
+import { useHasMounted } from "@/lib/useHasMounted";
 
 export function ProjectCard({
   project,
@@ -17,9 +18,15 @@ export function ProjectCard({
   priority?: boolean;
   index?: number;
 }) {
+  // On the very first paint (server-rendered HTML and the client's
+  // pre-hydration render), skip the mount animation entirely so the card is
+  // never gated behind opacity:0 waiting on JS. Once mounted, later
+  // appearances (filter changes, "load more") still animate in nicely.
+  const hasMounted = useHasMounted();
+
   return (
     <motion.article
-      initial={{ opacity: 0, y: 24 }}
+      initial={hasMounted ? { opacity: 0, y: 24 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: EASE, delay: (index % 6) * 0.05 }}
       className="group"
