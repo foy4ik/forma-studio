@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { NAV_LINKS, SOCIAL_LINKS, STUDIO_ADDRESS } from "@/data/nav";
+import { AUTHOR_CREDIT, NAV_LINKS, SOCIAL_LINKS, STUDIO_ADDRESS } from "@/data/nav";
 
 export function Footer() {
   return (
@@ -71,6 +71,7 @@ export function Footer() {
                     </a>
                   </li>
                 ))}
+                <li className="font-sans text-sm text-ink/50">{AUTHOR_CREDIT}</li>
               </ul>
             </div>
           </div>

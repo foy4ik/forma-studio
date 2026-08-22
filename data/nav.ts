@@ -11,10 +11,12 @@ export const NAV_LINKS: NavLink[] = [
 ];
 
 export const SOCIAL_LINKS: NavLink[] = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "Pinterest", href: "https://pinterest.com" },
-  { label: "LinkedIn", href: "https://linkedin.com" },
+  { label: "Telegram", href: "https://t.me/foy4ik" },
+  { label: "Kwork", href: "https://kwork.ru/user/dimfilhf" },
 ];
+
+/** Plain-text authorship credit — deliberately not a link. */
+export const AUTHOR_CREDIT = "by foy4ik";
 
 export const STUDIO_ADDRESS = {
   line1: "Via Solferino 14",

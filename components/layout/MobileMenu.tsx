@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { NAV_LINKS, SOCIAL_LINKS } from "@/data/nav";
+import { AUTHOR_CREDIT, NAV_LINKS, SOCIAL_LINKS } from "@/data/nav";
 import { EASE } from "@/lib/motion";
 import { useHasMounted } from "@/lib/useHasMounted";
 
@@ -92,6 +92,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
                 {link.label}
               </a>
             ))}
+            <span>{AUTHOR_CREDIT}</span>
           </div>
         </motion.div>
       ) : null}
